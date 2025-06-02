@@ -16,6 +16,7 @@ def create_tables():
 
 # ---------- CRUD Estudiantes ----------
 
+
 @app.route("/students", methods=["POST"])
 def create_student():
     """
@@ -43,6 +44,7 @@ def create_student():
     db.session.add(student)
     db.session.commit()
     return jsonify({"id": student.id, "name": student.name}), 201
+
 
 @app.route("/students", methods=["GET"])
 def get_students():
@@ -95,6 +97,7 @@ def create_subject():
     db.session.commit()
     return jsonify({"id": subject.id, "name": subject.name}), 201
 
+
 @app.route("/subjects", methods=["GET"])
 def get_subjects():
     """
@@ -112,6 +115,3 @@ def get_subjects():
             "student": s.student.name
         } for s in subjects
     ])
-
-if __name__ == "__main__":
-    app.run(debug=True)

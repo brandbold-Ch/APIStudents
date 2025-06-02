@@ -115,3 +115,7 @@ def get_subjects():
             "student": s.student.name
         } for s in subjects
     ])
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)

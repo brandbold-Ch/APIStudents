@@ -166,9 +166,10 @@ def get_subjects():
         {
             "id": s.id,
             "name": s.name,
-            "student": s.student.name
+            "student": getattr(s.student, "name", None) if getattr(s, "student", None) else None
         } for s in subjects
     ])
+
 
 
 @app.route("/subjects/<int:subject_id>", methods=["PUT"])

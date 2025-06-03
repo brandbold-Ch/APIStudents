@@ -9,13 +9,11 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 swagger = Swagger(app)
 db.init_app(app)
 
-
-@app.before_request
+@app.before_first_request
 def create_tables():
     db.create_all()
 
 # ---------- CRUD Estudiantes ----------
-
 
 @app.route("/students", methods=["POST"])
 def create_student():
@@ -65,7 +63,58 @@ def get_students():
         } for s in students
     ])
 
-# CRUD PUT y DELETE omitidos por brevedad, pero también se pueden documentar igual
+
+@app.route("/students/<int:student_id>", methods=["PUT"])
+def update_student(student_id):
+    """
+    Actualizar un estudiante
+    ---
+    parameters:
+      - in: path
+        name: student_id
+        type: integer
+        required: true
+      - in: body
+        name: body
+        schema:
+          required:
+            - name
+            - email
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+    responses:
+      200:
+        description: Estudiante actualizado
+    """
+    data = request.get_json()
+    student = Student.query.get_or_404(student_id)
+    student.name = data["name"]
+    student.email = data["email"]
+    db.session.commit()
+    return jsonify({"id": student.id, "name": student.name})
+
+
+@app.route("/students/<int:student_id>", methods=["DELETE"])
+def delete_student(student_id):
+    """
+    Eliminar un estudiante
+    ---
+    parameters:
+      - in: path
+        name: student_id
+        type: integer
+        required: true
+    responses:
+      204:
+        description: Estudiante eliminado
+    """
+    student = Student.query.get_or_404(student_id)
+    db.session.delete(student)
+    db.session.commit()
+    return '', 204
 
 # ---------- CRUD Asignaturas ----------
 
@@ -115,6 +164,59 @@ def get_subjects():
             "student": s.student.name
         } for s in subjects
     ])
+
+
+@app.route("/subjects/<int:subject_id>", methods=["PUT"])
+def update_subject(subject_id):
+    """
+    Actualizar una asignatura
+    ---
+    parameters:
+      - in: path
+        name: subject_id
+        type: integer
+        required: true
+      - in: body
+        name: body
+        schema:
+          required:
+            - name
+            - student_id
+          properties:
+            name:
+              type: string
+            student_id:
+              type: integer
+    responses:
+      200:
+        description: Asignatura actualizada
+    """
+    data = request.get_json()
+    subject = Subject.query.get_or_404(subject_id)
+    subject.name = data["name"]
+    subject.student_id = data["student_id"]
+    db.session.commit()
+    return jsonify({"id": subject.id, "name": subject.name})
+
+
+@app.route("/subjects/<int:subject_id>", methods=["DELETE"])
+def delete_subject(subject_id):
+    """
+    Eliminar una asignatura
+    ---
+    parameters:
+      - in: path
+        name: subject_id
+        type: integer
+        required: true
+    responses:
+      204:
+        description: Asignatura eliminada
+    """
+    subject = Subject.query.get_or_404(subject_id)
+    db.session.delete(subject)
+    db.session.commit()
+    return '', 204
 
 
 if __name__ == "__main__":

@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flasgger import Swagger
 from models import db, Student, Subject
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+CORS(app)
 swagger = Swagger(app)
 db.init_app(app)
 

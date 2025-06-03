@@ -9,11 +9,13 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 swagger = Swagger(app)
 db.init_app(app)
 
-@app.before_first_request
+
+@app.before_request
 def create_tables():
     db.create_all()
 
 # ---------- CRUD Estudiantes ----------
+
 
 @app.route("/students", methods=["POST"])
 def create_student():
@@ -117,6 +119,7 @@ def delete_student(student_id):
     return '', 204
 
 # ---------- CRUD Asignaturas ----------
+
 
 @app.route("/subjects", methods=["POST"])
 def create_subject():
